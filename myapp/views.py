@@ -37,11 +37,13 @@ def RegistrationView(request):
 			user_obj.save()
 
 			if user_obj is not None:
+				base64username = base64.b64encode( bytes(username, "utf-8") )
+				base64username_string = base64username.decode("utf-8")
 				print('Success!')
 				email_subject = "Welcome to TwitClone!"
 				email_from = "anush.abhyankar@gmail.com"
 				email_to = [user_obj.email]
-				email_content = "Hello there! Thanks for joining the TwitClone Community!\n\nPlease click on this link to activate your account: http://127.0.0.1:8000/myapp/activate/"
+				email_content = "Hello there! Thanks for joining the TwitClone Community!\n\nPlease click on this link to activate your account: http://127.0.0.1:8000/myapp/activate/"+base64username_string
 				x = send_mail(subject = email_subject, from_email = email_from, recipient_list = email_to, message = email_content, fail_silently=False)
 				return JsonResponse({'result' : 1})
 			else:
@@ -51,15 +53,32 @@ def RegistrationView(request):
 			print('There was an error. :(')
 			return JsonResponse({'result' : -1})
 
+# curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"anush.abhyankar@gmail.com"}' -H "Content-Type:application/json"
+# @csrf_exempt
+# def ActivationView(request):
+# 	if request.method == 'POST':
+# 		body_unicode = request.body.decode('utf-8')
+# 		body = json.loads(body_unicode)
+# 		email = body['email']
+
+# 		temp_user = User.objects.filter(email=email).first()
+# 		temp_user.isactive = True;
+# 		print(temp_user.username, 'activated.')
+# 		temp_user.save()
+
+# 		return JsonResponse({'result' : 1})
+# 	else:
+# 		return JsonResponse({'result' : -1})
+
+
+
 #curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"anush.abhyankar@gmail.com"}' -H "Content-Type:application/json"
 @csrf_exempt
-def ActivationView(request):
-	if request.method == 'POST':
-		body_unicode = request.body.decode('utf-8')
-		body = json.loads(body_unicode)
-		email = body['email']
-
-		temp_user = User.objects.filter(email=email).first()
+def ActivationView(request,username):
+	if request.method == 'GET':
+		print(username)
+		username = base64.b64decode(username).decode("utf8")
+		temp_user = User.objects.filter(username=username).first()
 		temp_user.isactive = True;
 		print(temp_user.username, 'activated.')
 		temp_user.save()

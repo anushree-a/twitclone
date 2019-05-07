@@ -6,6 +6,6 @@ urlpatterns = [
 	path('follow/', views.FollowView, name='FollowView'),
 	path('register/', views.RegistrationView, name='RegistrationView'),
 	path('login/', views.LoginView, name='LoginView'),
-	path('activate/', views.ActivationView, name='ActivationView'),
+	path('activate/<username>', views.ActivationView, name='ActivationView'),
     path('', views.index, name='index'),
 ]
