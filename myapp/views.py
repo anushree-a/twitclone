@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User, Follow
+from .models import User, Follow, Tweet
 from django.contrib import messages
 from django.core.mail import send_mail
 
@@ -21,11 +21,6 @@ def RegistrationView(request):
 			body = json.loads(body_unicode)
 
 			email = body['email']
-			temp_email = User.objects.filter(email= email).first()
-			if temp_email is not None:
-				print('You already have an account under this email ID.')
-				return JsonResponse({'result' : -1})
-
 			username = body['username']
 			temp_username = User.objects.filter(username= username).first()
 			if temp_username is not None:
@@ -53,25 +48,6 @@ def RegistrationView(request):
 			print('There was an error. :(')
 			return JsonResponse({'result' : -1})
 
-# curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"anush.abhyankar@gmail.com"}' -H "Content-Type:application/json"
-# @csrf_exempt
-# def ActivationView(request):
-# 	if request.method == 'POST':
-# 		body_unicode = request.body.decode('utf-8')
-# 		body = json.loads(body_unicode)
-# 		email = body['email']
-
-# 		temp_user = User.objects.filter(email=email).first()
-# 		temp_user.isactive = True;
-# 		print(temp_user.username, 'activated.')
-# 		temp_user.save()
-
-# 		return JsonResponse({'result' : 1})
-# 	else:
-# 		return JsonResponse({'result' : -1})
-
-
-
 #curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"anush.abhyankar@gmail.com"}' -H "Content-Type:application/json"
 @csrf_exempt
 def ActivationView(request,username):
@@ -82,8 +58,7 @@ def ActivationView(request,username):
 		temp_user.isactive = True;
 		print(temp_user.username, 'activated.')
 		temp_user.save()
-
-		return JsonResponse({'result' : 1})
+		return HttpResponse('Successful activation!')
 	else:
 		return JsonResponse({'result' : -1})
 
@@ -164,5 +139,52 @@ def UnfollowView(request):
 	else:
 		return JsonResponse({'result' : -1})
 
+@csrf_exempt
+#curl -X POST http://127.0.0.1:8000/myapp/createtweet/ -d '{"username": "YW51c2g=", "content":"My first tweet!"}' -H "Content-Type:application/json"
+def CreateTweet(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		username = body['username']
+		username = base64.b64decode(username).decode("utf8")
+		content = body['content']
+
+		temp_user = User.objects.filter(username=username).first()
+		new_tweet = Tweet(tweeter = temp_user, tweet_content=content)
+		new_tweet.save()
+		print(username, 'has tweeted successfully!')
+		return JsonResponse({'result' : 1})
+	else:
+		return JsonResponse({'result' : -1})
+
+@csrf_exempt
+#curl -X POST http://127.0.0.1:8000/myapp/deletetweet/ -d '{"tweet_id": "1"}' -H "Content-Type:application/json"
+def DeleteTweet(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		tweet_id = body['tweet_id']
+
+		temp_tweet = Tweet.objects.filter(tweet_id=tweet_id).delete()
+		print('Tweet deleted_ successfully!')
+		return JsonResponse({'result' : 1})
+	else:
+		return JsonResponse({'result' : -1})
 
 
+@csrf_exempt
+#curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "bmlkaGk="}' -H "Content-Type:application/json"
+def ReadTweets(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		username = body['username']
+		username = base64.b64decode(username).decode("utf8")
+		temp_user = User.objects.filter(username=username).first()
+		tweets = Tweet.objects.filter(tweeter = temp_user)
+		tweets_content = []
+		for t in tweets:
+			tweets_content.append(t.tweet_content)
+		return JsonResponse({'tweets' : tweets_content})
+	else:
+		return JsonResponse({'result' : -1})

@@ -2,6 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+	path('readtweets/', views.ReadTweets, name='ReadTweets'),
+	path('deletetweet/', views.DeleteTweet, name='DeleteTweet'),
+	path('createtweet/', views.CreateTweet, name='CreateTweet'),
 	path('unfollow/', views.UnfollowView, name='UnfollowView'),
 	path('follow/', views.FollowView, name='FollowView'),
 	path('register/', views.RegistrationView, name='RegistrationView'),
