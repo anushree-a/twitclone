@@ -9,3 +9,11 @@ class User(models.Model):
 
 	def __str__(self):
 		return str(self.username)
+
+class Follow(models.Model):
+	relation_id = models.AutoField(primary_key=True)
+	follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='follower_profile')
+	followee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followee_profile')
+
+	def __str__(self):
+		return str(self.relation_id)
