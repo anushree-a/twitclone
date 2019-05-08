@@ -4,6 +4,8 @@ import json
 
 import os
 
+#Automated the curl commands to test out the project's functionalities.
+
 os.system("curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{\"email\":\"yourmail@gmail.com\", \"username\":\"anushree\", \"password\":\"anushree\"}' -H \"Content-Type:application/json\"")
 
 os.system("curl -X POST http://127.0.0.1:8000/myapp/login/ -d '{\"username\": \"anushree\", \"password\":\"anushree\"}' -H \"Content-Type:application/json\"")

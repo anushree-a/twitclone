@@ -9,10 +9,14 @@ from .models import User, Follow, Tweet, TweetActivity
 from django.contrib import messages
 from django.core.mail import send_mail
 
+#This view is simply for testing out if the project is running in the initial stages of the project.
 @csrf_exempt 
 def index(request):
     return HttpResponse("Hello world!")
 
+#This view handles the stage-1 of the user registration process - ie getting user informationa and sending a verification email to the user.
+#Input --> email, username, password
+#Output --> 1 if success, -1 if failure
 #curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{"email":"yourmail@gmail.com", username":"anushree", "password":"anushree"}' -H "Content-Type:application/json"
 @csrf_exempt 
 def RegistrationView(request):	
@@ -48,6 +52,9 @@ def RegistrationView(request):
 			print('There was an error. :(')
 			return JsonResponse({'result' : -1})
 
+#This view handles the stage-2 of the user registration process - ie activating the account by setting isactive to True
+#Input --> None 
+#Output --> A HTTP response which says 'Account activated successfully!' if success else -1.
 #curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"yourmail@gmail.com"}' -H "Content-Type:application/json"
 @csrf_exempt
 def ActivationView(request,username):
@@ -58,11 +65,14 @@ def ActivationView(request,username):
 		temp_user.isactive = True;
 		print(temp_user.username, 'activated.')
 		temp_user.save()
-		return HttpResponse('Successful activation!')
+		return HttpResponse('Account activated successfully!')
 	else:
 		return JsonResponse({'result' : -1})
 
 
+#This view handles the login process. 
+#Input --> username, password
+#Output --> 64-bit encoded username token if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/login/ -d '{"username": "anushree", "password":"anushree"}' -H "Content-Type:application/json"
 @csrf_exempt
 def LoginView(request):
@@ -94,11 +104,11 @@ def LoginView(request):
 	else:
 		return JsonResponse({'user_token' : -1})
 
-@csrf_exempt
-#Nidhi's token = bmlkaGk=
-#Sam's token = c2Ft
-#Anushree's token = YW51c2g=
+#This view handles the follow operation. 
+#Input --> follower and followee (in 64-bit encoded form)
+#Output --> 1 if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/follow/ -d '{"follower": "bmlkaGk=", "followee":"c2Ft"}' -H "Content-Type:application/json"
+@csrf_exempt
 def FollowView(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -121,11 +131,11 @@ def FollowView(request):
 		return JsonResponse({'result' : -1})
 
 
-@csrf_exempt
-#Nidhi's token = bmlkaGk=
-#Sam's token = c2Ft
-#Anushree's token = YW51c2g=
+#This view handles the unfollow operation.
+#Input --> follower and followee (in 64-bit encoded form)
+#Output --> 1 if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/unfollow/ -d '{"follower": "bmlkaGk=", "followee":"c2Ft"}' -H "Content-Type:application/json"
+@csrf_exempt
 def UnfollowView(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -143,8 +153,11 @@ def UnfollowView(request):
 	else:
 		return JsonResponse({'result' : -1})
 
-@csrf_exempt
+#This view handles tweet creation operation
+#Input --> username (in 64-bit encoded form), tweet content
+#Output --> 1 if success else -1 
 #curl -X POST http://127.0.0.1:8000/myapp/createtweet/ -d '{"username": "YW51c2g=", "content":"My first tweet!"}' -H "Content-Type:application/json"
+@csrf_exempt
 def CreateTweet(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -161,8 +174,11 @@ def CreateTweet(request):
 	else:
 		return JsonResponse({'result' : -1})
 
-@csrf_exempt
+#This view handles tweet deletion operation
+#Input --> tweet_id
+#Output --> 1 if success else -1 
 #curl -X POST http://127.0.0.1:8000/myapp/deletetweet/ -d '{"tweet_id": "1"}' -H "Content-Type:application/json"
+@csrf_exempt
 def DeleteTweet(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -176,8 +192,11 @@ def DeleteTweet(request):
 		return JsonResponse({'result' : -1})
 
 
-@csrf_exempt
+#This view handles tweet deletion operation
+#Input --> username(in encoded format)
+#Output --> list of tweets if success else -1 
 #curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "bmlkaGk="}' -H "Content-Type:application/json"
+@csrf_exempt
 def ReadTweets(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -193,8 +212,11 @@ def ReadTweets(request):
 	else:
 		return JsonResponse({'result' : -1})
 
-@csrf_exempt
+#This view handles the like or dislike operation
+#Input --> tweet_id, activity_id (1 for like, 2 for dislike)
+#Output --> 1 if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"
+@csrf_exempt
 def LikeUnlikeView(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -203,27 +225,24 @@ def LikeUnlikeView(request):
 		activity_id = body['activity_id']
 
 		temp_tweet = Tweet.objects.filter(tweet_id = tweet_id).first()
-		print("content = ", temp_tweet.tweet_content)
-		print("init num likes" , temp_tweet.num_likes)
 		new_activity = TweetActivity.objects.create(tweet = temp_tweet, activity_id = activity_id)
 		if(activity_id == '1'):
 			temp_tweet.num_likes = temp_tweet.num_likes+1
-			print("now num likes", temp_tweet.num_likes)
 			temp_tweet.save()
-			print("HEREE1")
 		elif(activity_id == '2'):
 			temp_tweet.num_likes= temp_tweet.num_likes-1
-			print("now num likes", temp_tweet.num_likes)
 			temp_tweet.save()
-			print("HEREE2")
 		new_activity.save()
 		print('New activity recorded!')
 		return JsonResponse({'result' : 1})
 	else:
 		return JsonResponse({'result' : -1})
 
-@csrf_exempt
+#This view handles the retweet functionality
+#Input --> tweet_id, your own username (in 64-bit encoded form)
+#Output --> 1 if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"
+@csrf_exempt
 def RetweetView(request):
 	if request.method == 'POST':
 		body_unicode = request.body.decode('utf-8')
@@ -238,6 +257,9 @@ def RetweetView(request):
 		new_tweet = Tweet(tweeter = temp_user, tweet_content=tweet_content)
 		new_tweet.save()
 		print(username, 'has retweeted successfully!')
+		new_activity = TweetActivity.objects.create(tweet = new_tweet, activity_id = 3)
+		new_activity.save()
+		print('New activity recorded!')
 		return JsonResponse({'result' : 1})
 	else:
 		return JsonResponse({'result' : -1})
