@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User, Follow, Tweet
+from .models import User, Follow, Tweet, TweetActivity
 from django.contrib import messages
 from django.core.mail import send_mail
 
@@ -13,7 +13,7 @@ from django.core.mail import send_mail
 def index(request):
     return HttpResponse("Hello world!")
 
-#curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{"email":"anush.abhyankar@gmail.com", username":"anushree", "password":"anushree"}' -H "Content-Type:application/json"
+#curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{"email":"yourmail@gmail.com", username":"anushree", "password":"anushree"}' -H "Content-Type:application/json"
 @csrf_exempt 
 def RegistrationView(request):	
 		if request.method == 'POST':
@@ -48,7 +48,7 @@ def RegistrationView(request):
 			print('There was an error. :(')
 			return JsonResponse({'result' : -1})
 
-#curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"anush.abhyankar@gmail.com"}' -H "Content-Type:application/json"
+#curl -X POST http://127.0.0.1:8000/myapp/activate/ -d '{"email":"yourmail@gmail.com"}' -H "Content-Type:application/json"
 @csrf_exempt
 def ActivationView(request,username):
 	if request.method == 'GET':
@@ -72,9 +72,13 @@ def LoginView(request):
 		username = body['username']
 		password = body['password']
 
-		temp_user = User.objects.filter(username= username).first()
+		temp_user = User.objects.filter(username= username,password=password).first()
 
 		if temp_user is not None:
+			if temp_user.isactive is False:
+				print('Account hasn\'t been activated yet!')
+				return JsonResponse({'user_token' : -1})
+
 			base64username = base64.b64encode( bytes(username, "utf-8") )
 			base64username_string = base64username.decode("utf-8")
 			if temp_user.password == password:
@@ -85,7 +89,7 @@ def LoginView(request):
 				print('Wrong password entered!')
 				return JsonResponse({'user_token' : -1})
 		else:
-			print('No such user in database.')
+			print('Wrong username or password.')
 			return JsonResponse({'user_token' : -1})
 	else:
 		return JsonResponse({'user_token' : -1})
@@ -186,5 +190,54 @@ def ReadTweets(request):
 		for t in tweets:
 			tweets_content.append(t.tweet_content)
 		return JsonResponse({'tweets' : tweets_content})
+	else:
+		return JsonResponse({'result' : -1})
+
+@csrf_exempt
+#curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"
+def LikeUnlikeView(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		tweet_id = body['tweet_id']
+		activity_id = body['activity_id']
+
+		temp_tweet = Tweet.objects.filter(tweet_id = tweet_id).first()
+		print("content = ", temp_tweet.tweet_content)
+		print("init num likes" , temp_tweet.num_likes)
+		new_activity = TweetActivity.objects.create(tweet = temp_tweet, activity_id = activity_id)
+		if(activity_id == '1'):
+			temp_tweet.num_likes = temp_tweet.num_likes+1
+			print("now num likes", temp_tweet.num_likes)
+			temp_tweet.save()
+			print("HEREE1")
+		elif(activity_id == '2'):
+			temp_tweet.num_likes= temp_tweet.num_likes-1
+			print("now num likes", temp_tweet.num_likes)
+			temp_tweet.save()
+			print("HEREE2")
+		new_activity.save()
+		print('New activity recorded!')
+		return JsonResponse({'result' : 1})
+	else:
+		return JsonResponse({'result' : -1})
+
+@csrf_exempt
+#curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"
+def RetweetView(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		tweet_id = body['tweet_id']
+		username = body['username']
+		username = base64.b64decode(username).decode("utf8")
+
+		temp_tweet = Tweet.objects.filter(tweet_id=tweet_id).first()
+		tweet_content = temp_tweet.tweet_content
+		temp_user = User.objects.filter(username=username).first()
+		new_tweet = Tweet(tweeter = temp_user, tweet_content=tweet_content)
+		new_tweet.save()
+		print(username, 'has retweeted successfully!')
+		return JsonResponse({'result' : 1})
 	else:
 		return JsonResponse({'result' : -1})

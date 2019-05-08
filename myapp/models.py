@@ -22,6 +22,11 @@ class Tweet(models.Model):
 	tweet_id = models.AutoField(primary_key=True)
 	tweeter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tweeter_profile')
 	tweet_content = models.CharField(max_length=280)
+	num_likes = models.IntegerField(default=0)
 
 	def __str__(self):
 		return str(self.tweet_id)
+
+class TweetActivity(models.Model):
+	tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='tweet')
+	activity_id = models.IntegerField(default=1)
