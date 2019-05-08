@@ -19,7 +19,7 @@ This project supports the following functionalities:
 
 ## System Requirements:
 
-To build this application, I have used
+To build this application, I have used:
 1. Python 3.6.3
 2. Django 2.1.5
 
@@ -30,13 +30,13 @@ Before you run the project, you are required to make the following changes in th
 - Change EMAIL_HOST_USER to your own Gmail ID
 - Change EMAIL_HOST_PASSWORD to your own Gmail Password
 
-The e-mail ID you put above will be used as the 'SENDER' for all the TwitClone verification e-mails.  
+The e-mail ID you put above will be used as the 'SENDER' of all the TwitClone verification e-mails.  
 *Note: Please ensure that 'Less secure app access' under the Security wing of your Gmail account has been turned on. If not, you won't be able to send e-mails via this Django application through your Gmail account.*  
 
 In the course of this explanation, I will refer to two terminal screens - T1 and T2.  
 Keep a watch on both these screens to find out if there was any error in input or for other happenings.  
 
-Open up a terminal (T1) and run the following command: 'python manage.py runserver'. This should get the Django server up and running. Keep this server running on T1 throughout.
+Open up a terminal (T1) and run the following command: 'python manage.py runserver'. This should get the Django server up and running on T1. Keep this server running on T1 throughout.
 ## Explanation of each functionality:
 
 ### 1. Sign Up
@@ -61,12 +61,12 @@ On T2, run the following command:
 
 `curl -X POST http://127.0.0.1:8000/myapp/login/ -d '{"username": "anushree", "password":"anushree"}' -H "Content-Type:application/json"`
 
-*Note: Once a user logs in, the server returns his username in 64-bit encoded format to the client. Client is expected to store this encoded username in local storage/cookies and use it whenever he wants to fetch something from the server. This was done so as to ensure that actual data was not sent directly (which would make the system prone to attacks). At a production level, a custom encoding scheme can be used to achieve higher amount of security!*  
+*Note: Once a user logs in, the server returns his username in 64-bit encoded format to the client. Client is expected to store this encoded username in local storage/cookies and use it whenever he wants to fetch something from the server. This was done so as to ensure that actual data was not sent directly (which would make the system prone to attacks) At a production level, a custom encoding scheme can be used to achieve higher amount of security!*  
 
 ### 3. Follow 
 
 
-*Before moving ahead, I created and activated 2 more TwitClone accounts - 'sam' and 'nidhi'. You can do the same too, as you will need more than 1 account to test out the project's next functionalities like follow, like etc.*  
+*Before running the next tests, I created and activated 2 more TwitClone accounts - 'sam' and 'nidhi' (Using the Sign Up operation). You can do the same too, as you will need more than 1 account to test out the project's next functionalities like follow, like etc*  
 
 On T2, run the following command:
 
@@ -75,10 +75,10 @@ On T2, run the following command:
 **Please ensure that both follower and followee Users exist in the database before performing this operation to avoid errors.**  
 *Note: Here, follower and followee data should be in 64-bit encoded format*  
 
-For the sake of convenience, here are some 64-bit encoded forms of the usernames which I used when testing the project:
-anushree : YW51c2g=  
-sam : c2Ft  
-nidhi : bmlkaGk=  
+For the sake of convenience, here are some 64-bit encoded forms of usernames which I used when testing the project:
+anushree = YW51c2g=  
+sam = c2Ft  
+nidhi = bmlkaGk=  
 
 ### 4. Unfollow
 
@@ -108,18 +108,18 @@ To delete a tweet, you simply need to send the ID of the tweet to be deleted.
 
 `curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "bmlkaGk="}' -H "Content-Type:application/json"`
 
-Here, we simply need to send the encoded 64-bit username of the TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user.  
+Here, we simply need to send the encoded 64-bit username of TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user.  
 
 ### 8. Like/ Unlike Tweets
 `curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"`  
 
-Here, we need to send the server the tweet_id along with activity_id (1 indicates like operation and 2 indicates unlike operation)
+Here, we need to send the server the tweet_id along with activity_id (1 == like operation, 2 == unlike operation)
 
 ### 9. Retweet
 
 `curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"`
 
-Here, we need to send the server our own username (in encoded 64-bit format) and the tweet_id of the tweet we wish to retweet.  
+Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet.  
 
 
 
@@ -127,6 +127,6 @@ Here, we need to send the server our own username (in encoded 64-bit format) and
 
 - If you wish to see how the database of this project was designed, check out the models.py file in the myapp subfolder.  
 
-- There are several places where one needs to use an encoded format of another TwitClone user's username (eg: in like, unlike). This must be provided by the server as per requirements in the application. This is by no means a complete product. A few more views will need to be added (as per the feel of the application and how the front-end is designed) to build a complete project. 
+- There are several places where one needs to use encoded format of another user's username. This must be provided by the server as per the requirements in the application. This is by no means a complete product. A few more views will need to be added (as per the feel of the application and how the front-end is designed) to build a complete project.
 
-- Since this project tries it's best to adhere to REST standards, you can design your client side as per your own preferences. (Web app, Android app etc.)
+- Since this project tries it's best to adhere to REST standards, you can design your client side as per your  preferences and requirements. (Web app/Android app etc)
