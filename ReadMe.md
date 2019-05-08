@@ -19,7 +19,7 @@ This project supports the following functionalities:
 
 ## System Requirements:
 
-While building this application, I have used
+To this application, I have used
 1. Python 3.6.3
 2. Django 2.1.5
 
