@@ -17,7 +17,7 @@ def index(request):
 #This view handles the stage-1 of the user registration process - ie getting user informationa and sending a verification email to the user.
 #Input --> email, username, password
 #Output --> 1 if success, -1 if failure
-#curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{"email":"yourmail@gmail.com", username":"anushree", "password":"anushree"}' -H "Content-Type:application/json"
+#curl -X POST http://127.0.0.1:8000/myapp/register/ -d '{"email":"yourmail@gmail.com", "username":"anushree", "password":"anushree"}' -H "Content-Type:application/json"
 @csrf_exempt 
 def RegistrationView(request):	
 		if request.method == 'POST':
@@ -215,7 +215,7 @@ def ReadTweets(request):
 #This view handles the like or dislike operation
 #Input --> tweet_id, activity_id (1 for like, 2 for dislike)
 #Output --> 1 if success else -1
-#curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"
+#curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id":"1"}' -H "Content-Type:application/json"
 @csrf_exempt
 def LikeUnlikeView(request):
 	if request.method == 'POST':

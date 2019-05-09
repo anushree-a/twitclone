@@ -104,28 +104,39 @@ Here, username is in 64-bit encoded format and content refers to the content of 
 
 ### 5. Delete Tweet
 
+On T2, run the following command:  
+
 `curl -X POST http://127.0.0.1:8000/myapp/deletetweet/ -d '{"tweet_id": "1"}' -H "Content-Type:application/json"`  
 
 To delete a tweet, you simply need to send the ID of the tweet to be deleted.  
 
 ### 7. Read Tweets
 
+On T2, run the following command:  
+
 `curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "bmlkaGk="}' -H "Content-Type:application/json"`
 
 Here, we simply need to send the encoded 64-bit username of TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user.  
 
 ### 8. Like/ Unlike Tweets
+
+On T2, run the following command:  
+
 `curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"`  
 
 Here, we need to send the server the tweet_id along with activity_id (1 == like operation, 2 == unlike operation)
 
 ### 9. Retweet
 
+On T2, run the following command:  
+
 `curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"`
 
 Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet.  
 
-### 9. Reply to tweets
+### 10. Reply to tweets
+
+On T2, run the following command:  
 
 `curl -X POST http://127.0.0.1:8000/myapp/replytweet/ -d '{"tweet_id": "6","username":"c2Ft", "reply_content":"Nice!"}' -H "Content-Type:application/json"`
 
@@ -138,4 +149,4 @@ Here, we need to send the server our own username (64-bit encoded form), the twe
 
 - There are several places where one needs to use encoded format of another user's username. This must be provided by the server as per the requirements in the application. This is by no means a complete product. A few more views will need to be added (as per the feel of the application and how the front-end is designed) to build a complete project.
 
-- Since this project tries it's best to adhere to REST standards, you can design your client side as per your  preferences and requirements. (Web app/Android app etc)____
+- Since this project tries it's best to adhere to REST standards, you can design your client side as per your  preferences and requirements. (Web app/Android app etc)
