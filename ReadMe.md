@@ -13,9 +13,9 @@ This project supports the following functionalities:
 5. Create Tweets
 6. Delete Tweets
 7. Read Tweets
-8. Like Tweets
-9. Unlike Tweets
-10. Retweet
+8. Like/Unlike Tweets
+9. Retweet
+10. Reply to Tweets
 
 ## System Requirements:
 
@@ -36,7 +36,11 @@ The e-mail ID you put above will be used as the 'SENDER' of all the TwitClone ve
 In the course of this explanation, I will refer to two terminal screens - T1 and T2.  
 Keep a watch on both these screens to find out if there was any error in input or for other happenings.  
 
-Open up a terminal (T1) and run the following command: 'python manage.py runserver'. This should get the Django server up and running on T1. Keep this server running on T1 throughout.
+Open up a terminal (T1) and run the following command:  
+`python manage.py runserver`    
+This should get the Django server up and running on T1. Keep this server running on T1 throughout.
+
+
 ## Explanation of each functionality:
 
 ### 1. Sign Up
@@ -75,10 +79,10 @@ On T2, run the following command:
 **Please ensure that both follower and followee Users exist in the database before performing this operation to avoid errors.**  
 *Note: Here, follower and followee data should be in 64-bit encoded format*  
 
-For the sake of convenience, here are some 64-bit encoded forms of usernames which I used when testing the project:
-anushree = YW51c2g=  
-sam = c2Ft  
-nidhi = bmlkaGk=  
+For the sake of convenience, here are some 64-bit encoded forms of usernames which I used when testing the project:  
+anushree : YW51c2g=  
+sam : c2Ft  
+nidhi : bmlkaGk=  
 
 ### 4. Unfollow
 
@@ -121,6 +125,11 @@ Here, we need to send the server the tweet_id along with activity_id (1 == like 
 
 Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet.  
 
+### 9. Reply to tweets
+
+`curl -X POST http://127.0.0.1:8000/myapp/replytweet/ -d '{"tweet_id": "6","username":"c2Ft", "reply_content":"Nice!"}' -H "Content-Type:application/json"`
+
+Here, we need to send the server our own username (64-bit encoded form), the tweet_id of the tweet we wish to retweet and the reply content.    
 
 
 ## Ending notes
@@ -129,4 +138,4 @@ Here, we need to send the server our own username (64-bit encoded form) and the 
 
 - There are several places where one needs to use encoded format of another user's username. This must be provided by the server as per the requirements in the application. This is by no means a complete product. A few more views will need to be added (as per the feel of the application and how the front-end is designed) to build a complete project.
 
-- Since this project tries it's best to adhere to REST standards, you can design your client side as per your  preferences and requirements. (Web app/Android app etc)
+- Since this project tries it's best to adhere to REST standards, you can design your client side as per your  preferences and requirements. (Web app/Android app etc)____

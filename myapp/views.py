@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import User, Follow, Tweet, TweetActivity
+from .models import User, Follow, Tweet, TweetActivity, TweetReply
 from django.contrib import messages
 from django.core.mail import send_mail
 
@@ -260,6 +260,31 @@ def RetweetView(request):
 		new_activity = TweetActivity.objects.create(tweet = new_tweet, activity_id = 3)
 		new_activity.save()
 		print('New activity recorded!')
+		return JsonResponse({'result' : 1})
+	else:
+		return JsonResponse({'result' : -1})
+
+#This view handles the functionality to reply to tweets
+#Input --> tweet_id, your own username (in 64-bit encoded form), reply content
+#Output --> 1 if success else -1
+#curl -X POST http://127.0.0.1:8000/myapp/replytweet/ -d '{"tweet_id": "6","username":"c2Ft", "reply_content":"Nice!"}' -H "Content-Type:application/json"
+@csrf_exempt
+def ReplyView(request):
+	if request.method == 'POST':
+		body_unicode = request.body.decode('utf-8')
+		body = json.loads(body_unicode)
+		tweet_id = body['tweet_id']
+		username = body['username']	
+		username = base64.b64decode(username).decode("utf8")
+		reply_content = body['reply_content']
+
+		temp_tweet = Tweet.objects.filter(tweet_id=tweet_id).first()
+		temp_user = User.objects.filter(username=username).first()
+
+		new_reply = TweetReply(tweet = temp_tweet, reply_content = reply_content, replier = temp_user)
+		new_reply.save()
+		print(new_reply.reply_content)
+		print(username, 'replied!')
 		return JsonResponse({'result' : 1})
 	else:
 		return JsonResponse({'result' : -1})

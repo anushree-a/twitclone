@@ -5,7 +5,7 @@ class User(models.Model):
 	user_id = models.AutoField(primary_key=True)
 	email = models.EmailField(max_length=80, default="email")
 	username = models.CharField(max_length=280, unique=True)
-	password = models.CharField(max_length=2)
+	password = models.CharField(max_length=20)
 	isactive = models.BooleanField(default=False)
 
 	def __str__(self):
@@ -34,3 +34,15 @@ class Tweet(models.Model):
 class TweetActivity(models.Model):
 	tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='tweet')
 	activity_id = models.IntegerField(default=1)
+
+	def __str__(self):
+		return str(self.tweet_id)
+
+#This stores tweet reply details
+class TweetReply(models.Model):
+	tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, related_name='tweett')
+	replier = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replier')
+	reply_content = models.CharField(max_length=280)
+
+	def __str__(self):
+		return str(self.replier)
