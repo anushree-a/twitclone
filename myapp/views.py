@@ -240,7 +240,7 @@ def LikeUnlikeView(request):
 
 #This view handles the retweet functionality
 #Input --> tweet_id, your own username (in 64-bit encoded form)
-#Output --> 1 if success else -1
+#Output --> tweet_id if success else -1
 #curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"
 @csrf_exempt
 def RetweetView(request):
@@ -260,7 +260,7 @@ def RetweetView(request):
 		new_activity = TweetActivity.objects.create(tweet = new_tweet, activity_id = 3)
 		new_activity.save()
 		print('New activity recorded!')
-		return JsonResponse({'result' : 1})
+		return JsonResponse({'tweet_id' : new_tweet.tweet_id})
 	else:
 		return JsonResponse({'result' : -1})
 

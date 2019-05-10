@@ -10,12 +10,12 @@ This project supports the following functionalities:
 2. Log-in to your TwitClone account
 3. Follow other TwitClone accounts 
 4. Unfollow other TwitClone accounts 
-5. Create Tweets
-6. Delete Tweets
+5. Create Tweet
+6. Delete Tweet
 7. Read Tweets
-8. Like/Unlike Tweets
+8. Like/Unlike Tweet
 9. Retweet
-10. Reply to Tweets
+10. Reply to Tweet
 
 ## System Requirements:
 
@@ -39,6 +39,10 @@ Keep a watch on both these screens to find out if there was any error in input o
 Open up a terminal (T1) and run the following command:  
 `python manage.py runserver`    
 This should get the Django server up and running on T1. Keep this server running on T1 throughout.
+
+Open up another terminal (T2) and run the following commands:
+`python manage.py makemigrations`
+`python manage.py migrate` 
 
 
 ## Explanation of each functionality:
@@ -80,7 +84,7 @@ On T2, run the following command:
 *Note: Here, follower and followee data should be in 64-bit encoded format*  
 
 For the sake of convenience, here are some 64-bit encoded forms of usernames which I used when testing the project:  
-anushree : YW51c2g=  
+anushree : YW51c2hyZWU= 
 sam : c2Ft  
 nidhi : bmlkaGk=  
 
@@ -98,9 +102,11 @@ Maximum length of a tweet is 280 chars.
 
 On T2, run the following command:
 
-`curl -X POST http://127.0.0.1:8000/myapp/createtweet/ -d '{"username": "YW51c2g=", "content":"My first tweet!"}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/createtweet/ -d '{"username": "YW51c2hyZWU=", "content":"My first tweet!"}' -H "Content-Type:application/json"`
 
 Here, username is in 64-bit encoded format and content refers to the content of the tweet.  
+
+I'd suggest you to tweet 2-3 times as you'll need them in the next steps.      
 
 ### 5. Delete Tweet
 
@@ -118,7 +124,7 @@ On T2, run the following command:
 
 Here, we simply need to send the encoded 64-bit username of TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user.  
 
-### 8. Like/ Unlike Tweets
+### 8. Like/ Unlike Tweet
 
 On T2, run the following command:  
 
@@ -130,11 +136,11 @@ Here, we need to send the server the tweet_id along with activity_id (1 == like 
 
 On T2, run the following command:  
 
-`curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "6","username":"c2Ft"}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "1","username":"c2Ft"}' -H "Content-Type:application/json"`
 
-Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet.  
+Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet. The tweet you wish to retweet should be present in your database. 
 
-### 10. Reply to tweets
+### 10. Reply to tweet
 
 On T2, run the following command:  
 
