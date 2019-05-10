@@ -36,12 +36,13 @@ The e-mail ID you put above will be used as the 'SENDER' of all the TwitClone ve
 In the course of this explanation, I will refer to two terminal screens - T1 and T2.  
 Keep a watch on both these screens to find out if there was any error in input or for other happenings.  
 
-Open up a terminal (T1) and run the following command:  
+Open up a terminal (T1) and run the following command after getting into the twitclone directory:  
 
-`python manage.py runserver`    
+`python manage.py runserver`  
+
 This should get the Django server up and running on T1. Keep this server running on T1 throughout.
 
-Open up another terminal (T2) and run the following commands:  
+Open up another terminal (T2) and run the following commands after getting into the twitclone directory:    
 
 `python manage.py makemigrations`  
 
@@ -141,7 +142,7 @@ Here, we need to send the server the tweet_id along with activity_id (1 == like 
 
 On T2, run the following command:  
 
-`curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "1","username":"c2Ft"}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/retweet/ -d '{"tweet_id": "2","username":"c2Ft"}' -H "Content-Type:application/json"`
 
 Here, we need to send the server our own username (64-bit encoded form) and the tweet_id of the tweet we wish to retweet. The tweet you wish to retweet should be present in your database. 
 
@@ -149,7 +150,7 @@ Here, we need to send the server our own username (64-bit encoded form) and the 
 
 On T2, run the following command:  
 
-`curl -X POST http://127.0.0.1:8000/myapp/replytweet/ -d '{"tweet_id": "6","username":"c2Ft", "reply_content":"Nice!"}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/replytweet/ -d '{"tweet_id": "2","username":"c2Ft", "reply_content":"Nice!"}' -H "Content-Type:application/json"`
 
 Here, we need to send the server our own username (64-bit encoded form), the tweet_id of the tweet we wish to retweet and the reply content.    
 
