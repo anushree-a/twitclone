@@ -37,12 +37,17 @@ In the course of this explanation, I will refer to two terminal screens - T1 and
 Keep a watch on both these screens to find out if there was any error in input or for other happenings.  
 
 Open up a terminal (T1) and run the following command:  
+
 `python manage.py runserver`    
 This should get the Django server up and running on T1. Keep this server running on T1 throughout.
 
-Open up another terminal (T2) and run the following commands:
-`python manage.py makemigrations`
-`python manage.py migrate` 
+Open up another terminal (T2) and run the following commands:  
+
+`python manage.py makemigrations`  
+
+`python manage.py migrate`  
+
+Please read through the instructions for each functionality before running the curl commands to avoid missing out on any important instructions.  
 
 
 ## Explanation of each functionality:
@@ -67,7 +72,7 @@ Once a user has activated his account, he can log in to TwitClone by entering hi
 
 On T2, run the following command:
 
-`curl -X POST http://127.0.0.1:8000/myapp/login/ -d '{"username": "anushree", "password":"anushree"}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/login/ -d '{"username": "anushree", "password":"123"}' -H "Content-Type:application/json"`
 
 *Note: Once a user logs in, the server returns his username in 64-bit encoded format to the client. Client is expected to store this encoded username in local storage/cookies and use it whenever he wants to fetch something from the server. This was done so as to ensure that actual data was not sent directly (which would make the system prone to attacks) At a production level, a custom encoding scheme can be used to achieve higher amount of security!*  
 
@@ -84,9 +89,9 @@ On T2, run the following command:
 *Note: Here, follower and followee data should be in 64-bit encoded format*  
 
 For the sake of convenience, here are some 64-bit encoded forms of usernames which I used when testing the project:  
-anushree : YW51c2hyZWU= 
+anushree : YW51c2hyZWU=  
 sam : c2Ft  
-nidhi : bmlkaGk=  
+nidhi : bmlkaGk=    
 
 ### 4. Unfollow
 
@@ -106,7 +111,7 @@ On T2, run the following command:
 
 Here, username is in 64-bit encoded format and content refers to the content of the tweet.  
 
-I'd suggest you to tweet 2-3 times as you'll need them in the next steps.      
+I'd suggest you to tweet 2-3 *more* times as you'll need them in the next steps.      
 
 ### 5. Delete Tweet
 
@@ -120,15 +125,15 @@ To delete a tweet, you simply need to send the ID of the tweet to be deleted.
 
 On T2, run the following command:  
 
-`curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "bmlkaGk="}' -H "Content-Type:application/json"`
+`curl -X POST http://127.0.0.1:8000/myapp/readtweets/ -d '{"username": "YW51c2hyZWU="}' -H "Content-Type:application/json"`
 
-Here, we simply need to send the encoded 64-bit username of TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user.  
+Here, we simply need to send the encoded 64-bit username of TwitClone user whose tweets we wants to read to the server. Server will send a list of all the tweets made by that user. If that user doesn't have any tweets, you'll get an empty list.  
 
 ### 8. Like/ Unlike Tweet
 
 On T2, run the following command:  
 
-`curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "6", "activity_id:"1}' -H "Content-Type:application/json"`  
+`curl -X POST http://127.0.0.1:8000/myapp/likeunlike/ -d '{"tweet_id": "2", "activity_id":"1"}' -H "Content-Type:application/json"`  
 
 Here, we need to send the server the tweet_id along with activity_id (1 == like operation, 2 == unlike operation)
 

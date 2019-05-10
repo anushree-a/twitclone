@@ -33,7 +33,6 @@ def RegistrationView(request):
 
 			password = body['password']
 			user_obj=User.objects.create(email=email,username=username, password=password)
-			user_obj.save()
 
 			if user_obj is not None:
 				base64username = base64.b64encode( bytes(username, "utf-8") )
@@ -44,6 +43,8 @@ def RegistrationView(request):
 				email_to = [user_obj.email]
 				email_content = "Hello there! Thanks for joining the TwitClone Community!\n\nPlease click on this link to activate your account: http://127.0.0.1:8000/myapp/activate/"+base64username_string
 				x = send_mail(subject = email_subject, from_email = email_from, recipient_list = email_to, message = email_content, fail_silently=False)
+				print(x)
+				user_obj.save()
 				return JsonResponse({'result' : 1})
 			else:
 				print('There was an error. :(')
@@ -170,7 +171,7 @@ def CreateTweet(request):
 		new_tweet = Tweet(tweeter = temp_user, tweet_content=content)
 		new_tweet.save()
 		print(username, 'has tweeted successfully!')
-		return JsonResponse({'result' : 1})
+		return JsonResponse({'tweet_id' : new_tweet.tweet_id})
 	else:
 		return JsonResponse({'result' : -1})
 
