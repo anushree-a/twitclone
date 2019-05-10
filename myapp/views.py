@@ -156,7 +156,7 @@ def UnfollowView(request):
 
 #This view handles tweet creation operation
 #Input --> username (in 64-bit encoded form), tweet content
-#Output --> 1 if success else -1 
+#Output --> tweet_id if success else -1 
 #curl -X POST http://127.0.0.1:8000/myapp/createtweet/ -d '{"username": "YW51c2g=", "content":"My first tweet!"}' -H "Content-Type:application/json"
 @csrf_exempt
 def CreateTweet(request):
